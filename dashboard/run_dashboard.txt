@@ -1,0 +1,7 @@
+kubectl apply -f dashboard.yml
+
+kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard 9090:9090
+
+kubectl get secret admin-user -n kubernetes-dashboard -o jsonpath={".data.token"} | base64 -d
+
+open http://localhost:9090/

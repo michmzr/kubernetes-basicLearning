@@ -14,12 +14,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-
-    - name: Set up kubectl
-      uses: azure/setup-kubectl@v3
-      with:
-        version: '1.27.0' # Adjust based on your cluster version
-
+    - name: Kubectl tool installer
+      uses: Azure/setup-kubectl@v4.0.0
     - name: Create kubeconfig file
       run: |
         mkdir -p ~/.kube

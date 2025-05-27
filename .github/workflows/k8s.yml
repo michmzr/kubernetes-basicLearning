@@ -40,6 +40,9 @@ jobs:
         > ~/.kube/config
     - name: Deploy to Kubernetes
       run: |
+        cat /home/runner/.kube/config
+        echo "-------------"
+      
         kubectl apply -f kubia-simple-deployment.yml
 
     - name: Verify deployment rollout

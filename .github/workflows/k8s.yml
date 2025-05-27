@@ -19,26 +19,25 @@ jobs:
     - name: Create kubeconfig file
       run: |
         mkdir -p ~/.kube
-        cat <<EOF > ~/.kube/config
-        apiVersion: v1
-        kind: Config
-        clusters:
-        - name: github-k8s
-          cluster:
-            server: ${{ secrets.K8S_SERVER }}
-            certificate-authority-data: ${{ secrets.K8S_CA }}
-        contexts:
-        - name: github-context
-          context:
-            cluster: github-k8s
-            user: github-actions
-        current-context: github-context
-        users:
-        - name: github-actions
-          user:
-            token: ${{ secrets.K8S_TOKEN }}
-        EOF
-
+        printf "%s\n" \
+        "apiVersion: v1" \
+        "kind: Config" \
+        "clusters:" \
+        "- name: github-k8s" \
+        "  cluster:" \
+        "    server: ${{ secrets.K8S_SERVER }}" \
+        "    certificate-authority-data: ${{ secrets.K8S_CA }}" \
+        "contexts:" \
+        "- name: github-context" \
+        "  context:" \
+        "    cluster: github-k8s" \
+        "    user: github-actions" \
+        "current-context: github-context" \
+        "users:" \
+        "- name: github-actions" \
+        "  user:" \
+        "    token: ${{ secrets.K8S_TOKEN }}" \
+        > ~/.kube/config
     - name: Deploy to Kubernetes
       run: |
         kubectl apply -f kubia-simple-deployment.yml

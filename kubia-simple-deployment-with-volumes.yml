@@ -1,0 +1,66 @@
+# pv-local.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: kubia-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  hostPath:
+    path: /tmp/kubia-data
+    type: DirectoryOrCreate
+---
+# pvc-local.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kubia-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: local-storage
+---
+# storage-class.yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: local-storage
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: Immediate
+---
+# kubia-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubia-simple-deployment
+  labels:
+    app: kubia
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: kubia
+  template:
+    metadata:
+      labels:
+        app: kubia
+    spec:
+      containers:
+        - name: kubia
+          image: knrt10/kubia
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: data-volume
+              mountPath: /app/data
+      volumes:
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: kubia-pvc

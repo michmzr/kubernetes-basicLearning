@@ -5,5 +5,3 @@ RUN npm i
 ADD app.js /app.js
 
 ENTRYPOINT [ "node", "app.js" ]
-
-Zaplacic za treningi personalne

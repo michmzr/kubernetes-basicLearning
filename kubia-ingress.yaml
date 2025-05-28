@@ -1,13 +1,18 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: kubia-ingress
-spec: 
+  name: kubia
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
   rules:
   - host: kubia.example.com
     http:
-      paths: 
+      paths:
       - path: /
-        backend: 
-          serviceName: kubia-nodeport
-          servicePort: 8888 
+        pathType: Prefix
+        backend:
+          service:
+            name: kubia-loadbalancer
+            port:
+              number: 8888
